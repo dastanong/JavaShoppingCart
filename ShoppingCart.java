@@ -94,7 +94,7 @@ public class ShoppingCart {
                 
             } else if(selectedOption == 2 && finalPrice > 0) {
                 System.out.println("Total price : RM " + finalPrice);
-                System.out.println("Please enter a coupon code for discount");
+                System.out.println("Please enter a coupon code for discount :");
 
                 Scanner codeInput = new Scanner(System.in);
                 String codeValue = codeInput.nextLine();
