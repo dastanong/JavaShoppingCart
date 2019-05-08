@@ -14,16 +14,18 @@ public class ShoppingCart {
         Integer count = 0;
         Boolean isAdded = false;
 
-        String[] menu = {"Configure Your Laptop", "View Cart", "Checkout"};
+        String[] menu = {"Customize Your Laptop", "View Cart", "Checkout"};
 
         String[][] allLaptops = {{"Latitude", "1000"}, {"XPS", "1300"}, {"Precision", "1700"}};
         String[][] screenList = {{"1080p", "1000"}, {"2k", "1500"}, {"4k", "2000"}};
         String[][] ramList = {{"8GB", "300"}, {"16GB", "500"}, {"32GB", "700"}};
         String[][] hddList = {{"1TB HDD", "400"}, {"128GB SSD", "550"}, {"256GB SSD", "750"}, {"512GB SSD", "950"}};
         String[][] processorList = {{"i3", "600"}, {"i5", "800"}, {"i7", "1000"}};
-        String discountCode = "Q3H1M0K8G1";
+        String[] discountCode = {"Q3H1M0K8G1", "4KF92LS1P2"};
 
+        ArrayList<ArrayList<String>> laptopList = new ArrayList<ArrayList<String>>();
         ArrayList<ArrayList<String>> cartList = new ArrayList<ArrayList<String>>();
+        ArrayList<String> couponList = new ArrayList<String>(Arrays.asList(discountCode));
 
         while(isAdded == false) {
             System.out.println("-----------------------------------");
@@ -80,31 +82,59 @@ public class ShoppingCart {
                     finalPrice += Integer.parseInt(processorList[selectedProcessor][1]);
 
                     System.out.println("Laptop Configuration : " + laptopArray);
-                    cartList.add(laptopArray);
+                    laptopList.add(laptopArray);
                     isAdded = true;
-                    
-                    if(cartList.size() > 0) {                   
-                        isAdded = false;
+                    System.out.println("Current laptop List : " + laptopList);
+
+                    Boolean proceedToCart = false;
+
+                    while(isAdded == true && proceedToCart == false) {
+                        String[] subMenu = {"Add to cart", "Back"};
+                        for(int j = 0; j < subMenu.length; j++) {
+                            System.out.println(j + ". " + subMenu[j]);
+                        }
+                        Scanner cartMenu = new Scanner(System.in);
+                        Integer submenuValue = Integer.parseInt(cartMenu.nextLine());
+
+                        if(submenuValue == 0) {
+                            cartList = laptopList;        
+                            isAdded = false;
+                            proceedToCart = true;
+                            System.out.println("Product added to cart : " + cartList);
+                        } else if(submenuValue == 1){
+                            isAdded = false;
+                        }
                     }
                 }
             } else if(selectedOption == 1) {
-                System.out.println("Cart List : ");
-                System.out.println(cartList);
-                System.out.println("Total : " + cartList.size() + " item in cart now");
-                
-            } else if(selectedOption == 2 && finalPrice > 0) {
+                if(cartList.size() > 0) {
+                    System.out.println("Cart List : ");
+                    System.out.println(cartList);
+                    System.out.println("Total : " + cartList.size() + " item in cart now");
+                } else {
+                    System.out.println("Empty Cart!");
+                    isAdded = false;
+                }
+            } else if(selectedOption == 2 && finalPrice > 0 && cartList.size() > 0) {
                 System.out.println("Total price : RM " + finalPrice);
                 System.out.println("Please enter a coupon code for discount :");
 
                 Scanner codeInput = new Scanner(System.in);
                 String codeValue = codeInput.nextLine();
 
-                if(codeValue.equals(discountCode)) {
+                if(couponList.contains(codeValue)) {
+                    int index = 0;
+                    index = couponList.indexOf(codeValue);
+                    couponList.remove(index);
+                    System.out.println(couponList);
                     finalPrice = finalPrice - (finalPrice * 30 / 100);
                     System.out.println("Final price discount for 30% and left : " + finalPrice);
                 } else {
                     System.out.println("Invalid discount code!");
                 }
+            } else {
+                System.out.println("Please add at least 1 product to cart");
+                isAdded = false;
             }
         }
     }
